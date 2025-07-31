@@ -5,18 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- ✏️ Update the page title to match your league name -->
-  <title>YOUR LEAGUE Live Scores</title>
+  <title>BKL Live Scores</title>
 
   <!-- Axios for making HTTP requests -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <style>
-    :root {
-      --bg-color: #121212;
-      --card-color: #1e1e1e;
-      --accent-color: #00ff88;
-      --text-color: #ffffff;
-      --text-muted: #aaa;
+.bg-black {
+      background-color: black;
     }
 
     /* ✨ Styling for a dark theme scoreboard UI */
@@ -27,26 +23,44 @@
     }
 
     body {
-      font-family: 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      font-family: 'PT Sans', 'Segoe UI', Roboto, sans-serif;
+      background-color: black;
+      color: #f5f5f5;
       min-height: 100vh;
       padding: 24px;
       max-width: 760px;
       margin: auto;
     }
 
+    h1, h2, h3, h4 {
+      font-family: 'PT Sans';
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     h1 {
       text-align: center;
       font-size: 32px;
       margin-bottom: 16px;
+      text-shadow: 0px 0px 20px rgba(212,175,55,.5);
     }
 
     .loading {
       text-align: center;
       font-size: 14px;
-      color: var(--accent-color);
       margin-bottom: 16px;
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'PT Sans';
+      font-weight: 600;
     }
 
     .home-link {
@@ -54,34 +68,45 @@
       text-align: center;
       margin-top: 30px;
       font-size: 14px;
-      color: var(--accent-color);
       text-decoration: none;
       transition: opacity 0.2s;
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'PT Sans';
     }
 
     .home-link:hover {
       opacity: 0.7;
+      text-shadow: 0px 0px 15px rgba(212,175,55,.5);
     }
 
     .game-container {
-      background-color: var(--card-color);
+      background-color: #1a1a1a;
       border-radius: 16px;
       margin-bottom: 24px;
-      box-shadow: 0 0 12px rgba(0, 255, 136, 0.15);
+      box-shadow: 0 0 12px rgba(218,165,32, 0.15);
       overflow: hidden;
+      border: 1px solid #333;
     }
 
     .game-header {
       padding: 16px 20px;
       background-color: #2a2a2a;
       cursor: pointer;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #444;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
       font-size: 17px;
       transition: background 0.2s ease;
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: #2a2a2a;
+      font-family: 'PT Sans';
     }
 
     .game-header:hover {
@@ -100,7 +125,14 @@
     .roster-title {
       font-weight: bold;
       margin-bottom: 8px;
-      color: var(--text-muted);
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'PT Sans';
+      font-size: 16px;
     }
 
     .player-row {
@@ -109,13 +141,25 @@
       border-radius: 6px;
       margin-bottom: 6px;
       font-size: 14px;
+      color: #aaa;
+      font-family: 'PT Sans';
+    }
+
+    .score-highlight {
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
   <!-- ✏️ Customize your scoreboard title -->
-  <h1>YOUR LEAGUE Live Scores</h1>
+  <h1>BKL Live Scores</h1>
 
   <div class="loading" id="loading-indicator">Loading...</div>
   <div id="games-container"></div>
