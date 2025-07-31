@@ -8,14 +8,11 @@
   <title>BKL Live Stats</title>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg-color: #121212;
-      --card-color: #1e1e1e;
-      --accent-color: #00ff88;
-      --text-color: #ffffff;
-      --text-muted: #aaa;
+    .bg-black {
+      background-color: black;
     }
 
     /* Basic styling for the stats page */
@@ -26,25 +23,36 @@
     }
 
     body {
-      font-family: 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      font-family: 'PT Sans', 'Segoe UI', Roboto, sans-serif;
+      background-color: black;
+      color: #f5f5f5;
       min-height: 100vh;
       padding: 24px;
       max-width: 760px;
       margin: auto;
     }
 
+    h1, h2, h3, h4 {
+      font-family: 'PT Sans';
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     h1 {
       text-align: center;
       font-size: 32px;
       margin-bottom: 16px;
+      text-shadow: 0px 0px 20px rgba(212,175,55,.5);
     }
 
     p {
       text-align: center;
       font-size: 14px;
-      color: var(--text-muted);
+      color: #aaa;
       margin-bottom: 20px;
     }
 
@@ -53,21 +61,28 @@
       text-align: center;
       margin-top: 30px;
       font-size: 14px;
-      color: var(--accent-color);
       text-decoration: none;
       transition: opacity 0.2s;
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .home-link:hover {
       opacity: 0.7;
+      text-shadow: 0px 0px 15px rgba(212,175,55,.5);
     }
 
     .stat-section {
-      background-color: var(--card-color);
+      background-color: #1a1a1a;
       border-radius: 16px;
       margin-bottom: 24px;
-      box-shadow: 0 0 12px rgba(0, 255, 136, 0.15);
+      box-shadow: 0 0 12px rgba(218,165,32, 0.15);
       overflow: hidden;
+      border: 1px solid #333;
     }
 
     .stat-title {
@@ -76,13 +91,16 @@
       padding: 16px 20px;
       background-color: #2a2a2a;
       cursor: pointer;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #444;
       display: flex;
       justify-content: space-between;
       align-items: center;
       transition: background 0.2s ease;
       gap: 12px;
       white-space: nowrap;
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: #2a2a2a;
+      font-family: 'PT Sans';
     }
 
     .stat-title span {
@@ -104,11 +122,16 @@
     .player, .team {
       margin: 6px 0;
       font-size: 15px;
-      color: var(--text-muted);
+      color: #aaa;
     }
 
     .highlight {
-      color: var(--accent-color);
+      color: rgb(218,165,32); /*if no support for background-clip*/
+      background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(top, rgba(218,165,32,1) 0%, rgba(213,173,109,1) 26%, rgba(226,186,120,1) 35%, rgba(163,126,67,1) 45%, rgba(212,175,55,1) 61%, rgba(213,173,109,1) 100%);
+      background: -o-linear-gradient(transparent, transparent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       font-weight: 600;
     }
 
@@ -117,19 +140,36 @@
       padding: 14px;
       font-size: 16px;
       border-radius: 10px;
-      border: none;
+      border: 2px solid #333;
       background-color: #2a2a2a;
       color: white;
       margin-bottom: 12px;
+      font-family: 'PT Sans';
+      transition: border-color 0.3s ease;
+    }
+
+    #playerSearch:focus {
+      outline: none;
+      border-color: rgb(218,165,32);
+      box-shadow: 0 0 10px rgba(218,165,32, 0.2);
     }
 
     #playerResult {
       display: none;
-      background-color: var(--card-color);
+      background-color: #1a1a1a;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 255, 136, 0.1);
+      box-shadow: 0 4px 10px rgba(218,165,32, 0.1);
       animation: fadeIn 0.2s ease-in-out;
+      border: 1px solid #333;
+    }
+
+    .loading-bar {
+      text-align: center;
+      margin-bottom: 20px;
+      color: rgb(218,165,32);
+      font-family: 'PT Sans';
+      font-weight: 600;
     }
 
     @keyframes fadeIn {
@@ -152,7 +192,7 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-black">
 
   <!-- ✏️ Change this heading to your league or event name -->
   <h1>BKL Live Stats</h1>
@@ -241,10 +281,10 @@ const scheduleCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtfVfpI
       resDiv.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div>
-            <div style="font-size: 20px; font-weight: 600;">${username}</div>
+            <div style="font-size: 20px; font-weight: 600; color: rgb(218,165,32);">${username}</div>
             <div style="font-size: 14px; color: #aaa;">${data.team}</div>
           </div>
-          <div style="background-color: #333; padding: 6px 12px; border-radius: 6px; font-size: 16px;">${data.score.toFixed(2)}</div>
+          <div style="background-color: #333; padding: 6px 12px; border-radius: 6px; font-size: 16px; color: rgb(218,165,32); font-weight: 600;">${data.score.toFixed(2)}</div>
         </div>
         <div style="margin-top: 10px; font-size: 14px;">
           Karma Rank: <span class="highlight">${data.rank > 0 ? data.rank : 'N/A'}</span><br>
@@ -337,9 +377,9 @@ const scheduleCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtfVfpI
             <div class="stat-list" id="${id}">
               ${list.map(x => {
                 if (type === 'player') {
-                  return `<div class="player">${x.user} (${x.team}) - ${x[key]}</div>`;
+                  return `<div class="player">${x.user} (${x.team}) - <span class="highlight">${x[key]}</span></div>`;
                 } else {
-                  return `<div class="team">${x[0]}: ${x[1].toFixed(1)}</div>`;
+                  return `<div class="team">${x[0]}: <span class="highlight">${x[1].toFixed(1)}</span></div>`;
                 }
               }).join('')}
             </div>
